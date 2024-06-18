@@ -43,7 +43,7 @@ string screen[25][81];
 // temp = -20(2)   |   19(1)   |    60(6)
 // stru = 0-none 1-tree 2-stone 3-dungeon 4-playersmth
 // safe = 0-no | 1-yes
-int world[5000][5000];
+int World[5000][5000];
 int playerPosition[2] {6, 6};
 
 class engine {
@@ -73,27 +73,27 @@ class engine {
                 int genRes = generator(0, 3);
                 // Biome
                 if (genRes==0) {
-                    world[y][x]=2*100;
+                    World[y][x]=2*100;
                 }
                 if (genRes==1) {
-                    world[y][x]=1*100;
+                    World[y][x]=1*100;
                 }
                 if (genRes==2) {
-                    world[y][x]=6*100;
+                    World[y][x]=6*100;
                 }
                 // stru
                 genRes = generator(0, 4);
                 if (genRes==0) {
-                    world[y][x]+=1*10;
+                    World[y][x]+=1*10;
                 }
-                if (genRes==1 && world[y][x]/100!=6) {
-                    world[y][x]+=2*10;
+                if (genRes==1 && World[y][x]/100!=6) {
+                    World[y][x]+=2*10;
                 }
                 if (genRes==2) {
-                    world[y][x]+=3*10;
+                    World[y][x]+=3*10;
                 }
                 if (genRes==3) {
-                    world[y][x]+=4*10;
+                    World[y][x]+=4*10;
                 }
             }
         }
@@ -109,12 +109,12 @@ class graphics {
                     grass();
                 }
                 if (y>=8 && y<14) {
-                    if ((world[playerPosition[0]][playerPosition[1]]/100) == 1 && (world[playerPosition[0]][playerPosition[1]]/100) != 6) {
+                    if ((World[playerPosition[0]][playerPosition[1]]/100) == 1 && (World[playerPosition[0]][playerPosition[1]]/100) != 6) {
                         setColor(10);
                     }
                 }
                 if (y>=14 && y<20) { //8
-                    if ((world[playerPosition[0]][playerPosition[1]]/100) == 1 || (world[playerPosition[0]][playerPosition[1]]/100) == 2 && (world[playerPosition[0]][playerPosition[1]]/100) != 6) {
+                    if ((World[playerPosition[0]][playerPosition[1]]/100) == 1 || (World[playerPosition[0]][playerPosition[1]]/100) == 2 && (World[playerPosition[0]][playerPosition[1]]/100) != 6) {
                         setColor(8);
                     }
                 }
@@ -134,20 +134,20 @@ class graphics {
     void drawTerrain() {
         for (int y=24; y>20; y--) {
             for (int x=0; x<81; x++) {
-                if ((world[playerPosition[0]][playerPosition[1]]/100) == 1) {
+                if ((World[playerPosition[0]][playerPosition[1]]/100) == 1) {
                     screen[y][x]="|";
                 }
-                if ((world[playerPosition[0]][playerPosition[1]]/100) == 2) {
+                if ((World[playerPosition[0]][playerPosition[1]]/100) == 2) {
                     screen[y][x]="*";
                 }
-                if ((world[playerPosition[0]][playerPosition[1]]/100) == 6) {
+                if ((World[playerPosition[0]][playerPosition[1]]/100) == 6) {
                     screen[y][x]="#";
                 }
             }
         }
     }
     void drawTree(int biome) {
-        if (biome == 1 && world[playerPosition[0]][playerPosition[1]]/100 != 6) {
+        if (biome == 1 && World[playerPosition[0]][playerPosition[1]]/100 != 6) {
             // draw log
             for (int y=14; y<20; y++) {
                 screen[y][35]="#"; 
@@ -200,7 +200,7 @@ class graphics {
     }
 
     void grass() {
-        if ((world[playerPosition[0]][playerPosition[1]]/100) == 1) {
+        if ((World[playerPosition[0]][playerPosition[1]]/100) == 1) {
             // GRASS
             switch (engReference.generator(0, 2)) {
                 case 0:
@@ -214,7 +214,7 @@ class graphics {
                     break;
                 }
         }
-        if ((world[playerPosition[0]][playerPosition[1]]/100) == 2) {
+        if ((World[playerPosition[0]][playerPosition[1]]/100) == 2) {
             // SNOW
             switch (engReference.generator(0, 2)) {
                 case 0:
@@ -228,7 +228,7 @@ class graphics {
                     break;
                 }
         }
-        if ((world[playerPosition[0]][playerPosition[1]]/100) == 6) {
+        if ((World[playerPosition[0]][playerPosition[1]]/100) == 6) {
             // SAND
             switch (engReference.generator(0, 2)) {
                 case 0:
@@ -264,12 +264,17 @@ class player {
 
     private:
     bool debugMode=false;
+    int playerDamage=5;
     int hpAm=10;
     int hungerAm=10;
+    int playerInventory;
     vector<string> hpUI {"X", "X", "X", "X", "X", "X", "X", "X", "X", "X"};
     vector<string> hungrUI {"X", "X", "X", "X", "X", "X", "X", "X", "X", "X"};
 
     public:
+    int getDamage() {
+        return playerDamage;
+    }
     void switchDebug() {
         if (GetAsyncKeyState(VK_F3)) {
             debugMode=true;
@@ -293,6 +298,12 @@ class player {
     void changePPosX(int n) {
         playerPosition[1]+=n;
     }
+    void changePPosminY(int n) {
+        playerPosition[0]-=n;
+    }
+    void changePPosminX(int n) {
+        playerPosition[1]-=n;
+    }
     void printHp(int hp) {
         graphcs.setColor(1);
         cout<<"Health - ";
@@ -313,30 +324,52 @@ class player {
 };
 class controls {
     player getPlayer;
+    graphics getGraphics;
     public:
     int input() {
-        int velocity = 0;
         if (GetAsyncKeyState(VK_UP)) {
             getPlayer.changePPosY(-1); // upper in array
-            velocity=1;
         }
         if (GetAsyncKeyState(VK_DOWN)) {
             getPlayer.changePPosY(1); // lower in array
-            velocity=1;
         }
         if (GetAsyncKeyState(VK_RIGHT)) {
             getPlayer.changePPosX(1);
-            velocity=1;
         }
         if (GetAsyncKeyState(VK_LEFT)) {
             getPlayer.changePPosX(-1);
-            velocity=1;
         }
-        return velocity;
     }
 };
-class structures {
-    // tree | stone | burned tree | dungeon entrance
+class world {
+    controls getPlayerControls;
+    player getPlayer;
+    private:
+    int treeHp;
+    public:
+    void setTreeHp(int structure) {
+        if (structure==1) {
+            treeHp=10;
+        }
+    }
+    void hurtTree(int structure) {
+        if (GetAsyncKeyState(VK_SPACE) && structure==1) {
+            treeHp-=getPlayer.getDamage();
+        }
+    }
+    int getTreeHp() {
+        return treeHp;
+    }
+    void killTree(int structure, int curHp) {
+        curHp=getTreeHp();
+        if (structure==1 && curHp==0) {
+            int temp = World[playerPosition[0]][playerPosition[1]]/100*100;
+            int stru = World[playerPosition[0]][playerPosition[1]]%100/10*10;
+            int safe = World[playerPosition[0]][playerPosition[1]]%10;
+            stru=0;
+            World[playerPosition[0]][playerPosition[1]] = temp+stru+safe;
+        }
+    }
 };
 
 int main() {
@@ -345,6 +378,7 @@ int main() {
     engine engineHandler;
     player player;
     controls controlsHandler;
+    world getWorld;
     engineHandler.rainbow();
     graphicsHandler.setColor(11);
     system("cls");
@@ -360,7 +394,7 @@ int main() {
     cout<<"Generated successfully!"<<endl;
     Sleep(150);
     system("cls");
-    cout<<world[playerPosition[0]][playerPosition[1]]<<endl;
+    cout<<World[playerPosition[0]][playerPosition[1]]<<endl;
     Sleep(150);
     system("cls");
     while (1) {
@@ -368,8 +402,9 @@ int main() {
 
         graphicsHandler.clearScreen();
         graphicsHandler.drawTerrain();
-        graphicsHandler.drawTree(world[playerPosition[0]][playerPosition[1]]%100/10);
-        graphicsHandler.drawStone(world[playerPosition[0]][playerPosition[1]]%100/10);
+        graphicsHandler.drawTree(World[playerPosition[0]][playerPosition[1]]%100/10);
+        graphicsHandler.drawStone(World[playerPosition[0]][playerPosition[1]]%100/10);
+        getWorld.setTreeHp(World[playerPosition[0]][playerPosition[1]]%100/10);
 
         graphicsHandler.printScreen();
         player.printHp(10);
@@ -378,7 +413,7 @@ int main() {
         cout<<""<<endl;
         if (player.getDegugState()==true) {
             cout<<playerPosition[0]<<" "<<playerPosition[1]<<endl;
-            cout<<world[playerPosition[0]][playerPosition[1]]<<endl;
+            cout<<World[playerPosition[0]][playerPosition[1]]<<endl;
         }
         while(1) {
             controlsHandler.input();
@@ -388,6 +423,11 @@ int main() {
                 engineHandler.borders();
                 break;
             }
+            if (World[playerPosition[0]][playerPosition[1]]%100/10==1) {
+                getWorld.hurtTree(World[playerPosition[0]][playerPosition[1]]%100/10);
+                getWorld.killTree(World[playerPosition[0]][playerPosition[1]]%100/10, 0);
+            }
+            Sleep(100);
         }
         Sleep(100);
         system("cls");
