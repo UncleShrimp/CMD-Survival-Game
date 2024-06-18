@@ -43,7 +43,7 @@ string screen[25][81];
 // temp = -20(2)   |   19(1)   |    60(6)
 // stru = 0-none | 1-tree | 2-stone | 3-dungeon | 4-wall/furniture
 // safe = 0-no | 1-yes
-int world[20000][20000];
+int world[5000][5000];
 int playerPosition[2] {6, 6};
 
 class engine {
@@ -97,44 +97,6 @@ class engine {
                     world[y][x]+=4*10;
                 }
             }
-            cout<<"Generating ";
-            int am=1;
-            switch (y/2)
-            {
-            case 2000:
-                am=2;
-                break;
-            case 3000:
-                am=3;
-                break;
-            case 4000:
-                am=4;
-                break;
-            case 5000:
-                am=5;
-                break;
-            case 6000:
-                am=6;
-                break;
-            case 7000:
-                am=7;
-                break;
-            case 8000:
-                am=8;
-                break;
-            case 9000:
-                am=9;
-                break;
-            case 10000:
-                am=10;
-                break;
-            }
-            for (int ii=0; ii<am; ii++) {
-                cout<<".";
-                Sleep(20);
-            }
-            Sleep(100);
-            system("cls");
         }
     }
 };
@@ -376,7 +338,8 @@ int main() {
     graphicsHandler.setColor(11);
     system("cls");
     Sleep(200);
-    engineHandler.overWorldGeneration(20000, 20000);
+    cout<<"Generating ...";
+    engineHandler.overWorldGeneration(5000, 5000);
     /*for (int i=0; i<1000; i++) {
         for (int ii=0; ii<1000; ii++) {
             cout<<world[i][ii];
