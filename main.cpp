@@ -308,6 +308,7 @@ int main() {
     controls controlsHandler;
     engineHandler.rainbow();
     system("cls");
+    Sleep(200);
     graphicsHandler.setColor(11);
     cout<<"Generating world "<<endl;
     engineHandler.overWorldGeneration(20000, 20000);
@@ -319,8 +320,9 @@ int main() {
     }*/
     for (int i=0; i<10; i++) {
         cout<<".";
-        Sleep(20);
+        Sleep(50);
     }
+    system("cls");
     cout<<world[playerPosition[0]][playerPosition[1]]<<endl;
     Sleep(150);
     while (1) {
