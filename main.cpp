@@ -29,17 +29,12 @@ string screen[25][81];
 
 
 
-
-
-
-
-                              ________________
-                            _/         ..     \
-                           /    (        /      \
-                          |                     )
-                         (         -/            \
-                        /      \           //    /
-                       (             _            )
+                                   OOOOO
+                               OOOOOOOOOOOOO
+                            OOOOOOOOOOOOOOOOOOO
+                           OOOOOOOOOOOOOOOOOOOOO
+                          OOOOOOOOOOOOOOOOOOOOOOO
+                          OOOOOOOOOOOOOOOOOOOOOOO
 33333333333333333333333333333333333333333333333333333333333333333333333333333333
 
 */
@@ -135,6 +130,7 @@ class graphics {
             }
         }
     }
+
     void drawTerrain() {
         for (int y=24; y>20; y--) {
             for (int x=0; x<81; x++) {
@@ -166,6 +162,37 @@ class graphics {
                 if (y>8 && y<13) {
                     for (int x=27; x<44; x++) {
                         screen[y][x]="Q";
+                    }
+                }
+            }
+        }
+    }
+    void drawStone(int structure) {
+        if (structure == 2) {
+            for (int y=14; y<20; y++) {
+                if (y==14) {
+                    for (int x=35; x<40; x++) {
+                        screen[y][x]="O";
+                    }
+                }
+                if (y==15) {
+                    for (int x=31; x<44; x++) {
+                        screen[y][x]="O";
+                    }
+                }
+                if (y==16) {
+                    for (int x=28; x<47; x++) {
+                        screen[y][x]="O";
+                    }
+                }
+                if (y==17) {
+                    for (int x=27; x<48; x++) {
+                        screen[y][x]="O";
+                    }
+                }
+                if (y>17 && y<20) {
+                    for (int x=26; x<49; x++) {
+                        screen[y][x]="O";
                     }
                 }
             }
@@ -307,9 +334,9 @@ int main() {
     player player;
     controls controlsHandler;
     engineHandler.rainbow();
+    graphicsHandler.setColor(11);
     system("cls");
     Sleep(200);
-    graphicsHandler.setColor(11);
     cout<<"Generating world "<<endl;
     engineHandler.overWorldGeneration(20000, 20000);
     /*for (int i=0; i<1000; i++) {
@@ -331,6 +358,7 @@ int main() {
         graphicsHandler.clearScreen();
         graphicsHandler.drawTerrain();
         graphicsHandler.drawTree(world[playerPosition[0]][playerPosition[1]]%100/10);
+        graphicsHandler.drawStone(world[playerPosition[0]][playerPosition[1]]%100/10);
 
         graphicsHandler.printScreen();
         player.printHp(10);
