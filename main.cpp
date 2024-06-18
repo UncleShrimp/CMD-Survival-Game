@@ -23,13 +23,32 @@ string screen[25][81];
                                    #
 33333333333333333333333333333333333333333333333333333333333333333333333333333333
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+33333333333333333333333333333333333333333333333333333333333333333333333333333333
+
 */
 
 // chunk attributes: temperature, structure, safe
 // temp = -20(2)   |   19(1)   |    60(6)
 // stru = 0-none | 1-tree | 2-stone | 3-dungeon | 4-wall/furniture
 // safe = 0-no | 1-yes
-int world[1000][1000];
+int world[20000][20000];
 int playerPosition[2] {6, 6};
 
 class engine {
@@ -288,7 +307,7 @@ int main() {
     player player;
     controls controlsHandler;
     engineHandler.rainbow();
-    engineHandler.overWorldGeneration(1000, 1000);
+    engineHandler.overWorldGeneration(20000, 20000);
     /*for (int i=0; i<1000; i++) {
         for (int ii=0; ii<1000; ii++) {
             cout<<world[i][ii];
