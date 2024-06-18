@@ -41,7 +41,7 @@ string screen[25][81];
 
 // chunk attributes: temperature, structure, safe
 // temp = -20(2)   |   19(1)   |    60(6)
-// stru = 0-none | 1-tree | 2-stone | 3-dungeon | 4-wall/furniture
+// stru = 0-none 1-tree 2-stone 3-dungeon 4-playersmth
 // safe = 0-no | 1-yes
 int world[5000][5000];
 int playerPosition[2] {6, 6};
@@ -147,7 +147,7 @@ class graphics {
         }
     }
     void drawTree(int biome) {
-        if (biome == 2 && world[playerPosition[0]][playerPosition[1]]/100 != 6) {
+        if (biome == 1 && world[playerPosition[0]][playerPosition[1]]/100 != 6) {
             // draw log
             for (int y=14; y<20; y++) {
                 screen[y][35]="#"; 
@@ -168,7 +168,7 @@ class graphics {
         }
     }
     void drawStone(int structure) {
-        if (structure == 3) {
+        if (structure == 2) {
             for (int y=14; y<20; y++) {
                 if (y==14) {
                     for (int x=35; x<40; x++) {
