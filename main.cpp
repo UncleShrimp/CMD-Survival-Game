@@ -33,13 +33,13 @@ string screen[25][81];
 
 
 
-
-
-
-
-
-
-
+                              ________________
+                            _/         ..     \
+                           /    (        /      \
+                          |                     )
+                         (         -/            \
+                        /      \           //    /
+                       (             _            )
 33333333333333333333333333333333333333333333333333333333333333333333333333333333
 
 */
@@ -307,6 +307,9 @@ int main() {
     player player;
     controls controlsHandler;
     engineHandler.rainbow();
+    system("cls");
+    graphicsHandler.setColor(11);
+    cout<<"Generating world "<<endl;
     engineHandler.overWorldGeneration(20000, 20000);
     /*for (int i=0; i<1000; i++) {
         for (int ii=0; ii<1000; ii++) {
@@ -314,10 +317,13 @@ int main() {
         }
         cout<<""<<endl;
     }*/
+    for (int i=0; i<10; i++) {
+        cout<<".";
+        Sleep(20);
+    }
     cout<<world[playerPosition[0]][playerPosition[1]]<<endl;
     Sleep(150);
     while (1) {
-        engineHandler.borders();
         graphicsHandler.setColor(7);
 
         graphicsHandler.clearScreen();
@@ -333,7 +339,9 @@ int main() {
         cout<<world[playerPosition[0]][playerPosition[1]]<<endl;
         while(1) {
             controlsHandler.input();
+            engineHandler.borders();
             if (controlsHandler.input()!=0) {
+                engineHandler.borders();
                 break;
             }
         }
