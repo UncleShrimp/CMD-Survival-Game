@@ -327,18 +327,24 @@ class controls {
     graphics getGraphics;
     public:
     int input() {
+        int velocity = 0;
         if (GetAsyncKeyState(VK_UP)) {
             getPlayer.changePPosY(-1); // upper in array
+            velocity=1;
         }
         if (GetAsyncKeyState(VK_DOWN)) {
             getPlayer.changePPosY(1); // lower in array
+            velocity=1;
         }
         if (GetAsyncKeyState(VK_RIGHT)) {
             getPlayer.changePPosX(1);
+            velocity=1;
         }
         if (GetAsyncKeyState(VK_LEFT)) {
             getPlayer.changePPosX(-1);
+            velocity=1;
         }
+        return velocity;
     }
 };
 class world {
