@@ -263,12 +263,24 @@ class player {
     graphics graphcs;
 
     private:
+    bool debugMode=false;
     int hpAm=10;
     int hungerAm=10;
     vector<string> hpUI {"X", "X", "X", "X", "X", "X", "X", "X", "X", "X"};
     vector<string> hungrUI {"X", "X", "X", "X", "X", "X", "X", "X", "X", "X"};
 
     public:
+    void switchDebug() {
+        if (GetAsyncKeyState(VK_F3)) {
+            debugMode=true;
+        }
+        if (GetAsyncKeyState(VK_F4)) {
+            debugMode=false;
+        }
+    }
+    bool getDegugState() {
+        return debugMode;
+    }
     int getPPosY() {
         return playerPosition[0];
     }
@@ -346,9 +358,11 @@ int main() {
         cout<<""<<endl;
     }*/
     cout<<"Generated successfully!"<<endl;
+    Sleep(150);
     system("cls");
     cout<<world[playerPosition[0]][playerPosition[1]]<<endl;
     Sleep(150);
+    system("cls");
     while (1) {
         graphicsHandler.setColor(7);
 
@@ -362,10 +376,13 @@ int main() {
         cout<<""<<endl;
         player.printHungr(10);
         cout<<""<<endl;
-        cout<<playerPosition[0]<<" "<<playerPosition[1]<<endl;
-        cout<<world[playerPosition[0]][playerPosition[1]]<<endl;
+        if (player.getDegugState()==true) {
+            cout<<playerPosition[0]<<" "<<playerPosition[1]<<endl;
+            cout<<world[playerPosition[0]][playerPosition[1]]<<endl;
+        }
         while(1) {
             controlsHandler.input();
+            player.switchDebug();
             engineHandler.borders();
             if (controlsHandler.input()!=0) {
                 engineHandler.borders();
