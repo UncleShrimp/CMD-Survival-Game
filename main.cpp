@@ -69,6 +69,7 @@ class engine {
     }
     void overWorldGeneration(int w, int l) {
         for (int y=0; y<w; y++) {
+            int cycle=2000;
             for (int x=0; x<l; x++) {
                 int genRes = generator(0, 3);
                 // Biome
@@ -96,6 +97,44 @@ class engine {
                     world[y][x]+=4*10;
                 }
             }
+            cout<<"Generating ";
+            int am=1;
+            switch (y/2)
+            {
+            case 2000:
+                am=2;
+                break;
+            case 3000:
+                am=3;
+                break;
+            case 4000:
+                am=4;
+                break;
+            case 5000:
+                am=5;
+                break;
+            case 6000:
+                am=6;
+                break;
+            case 7000:
+                am=7;
+                break;
+            case 8000:
+                am=8;
+                break;
+            case 9000:
+                am=9;
+                break;
+            case 10000:
+                am=10;
+                break;
+            }
+            for (int ii=0; ii<am; ii++) {
+                cout<<".";
+                Sleep(20);
+            }
+            Sleep(100);
+            system("cls");
         }
     }
 };
@@ -168,7 +207,7 @@ class graphics {
         }
     }
     void drawStone(int structure) {
-        if (structure == 2) {
+        if (structure == 3) {
             for (int y=14; y<20; y++) {
                 if (y==14) {
                     for (int x=35; x<40; x++) {
@@ -337,7 +376,6 @@ int main() {
     graphicsHandler.setColor(11);
     system("cls");
     Sleep(200);
-    cout<<"Generating world "<<endl;
     engineHandler.overWorldGeneration(20000, 20000);
     /*for (int i=0; i<1000; i++) {
         for (int ii=0; ii<1000; ii++) {
@@ -345,10 +383,7 @@ int main() {
         }
         cout<<""<<endl;
     }*/
-    for (int i=0; i<10; i++) {
-        cout<<".";
-        Sleep(50);
-    }
+    cout<<"Generated successfully!"<<endl;
     system("cls");
     cout<<world[playerPosition[0]][playerPosition[1]]<<endl;
     Sleep(150);
