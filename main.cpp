@@ -69,7 +69,6 @@ class engine {
     }
     void overWorldGeneration(int w, int l) {
         for (int y=0; y<w; y++) {
-            int cycle=2000;
             for (int x=0; x<l; x++) {
                 int genRes = generator(0, 3);
                 // Biome
