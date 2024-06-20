@@ -1,0 +1,10 @@
+^C:\USERS\DANAA\DOWNLOADS\PROJECTSC\BUILD64\CMAKEFILES\A45E1A2C95776D711AFECDA13A8E9981\GENERATE.STAMP.RULE
+setlocal
+C:\Users\danaa\Downloads\cmake-3.30.0-rc3-windows-x86_64\cmake-3.30.0-rc3-windows-x86_64\bin\cmake.exe -SC:/Users/danaa/Downloads/ProjectSC -BC:/Users/danaa/Downloads/ProjectSC/build64 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/danaa/Downloads/ProjectSC/build64/ProjectSC.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

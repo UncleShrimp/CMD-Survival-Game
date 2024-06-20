@@ -44,7 +44,7 @@ string screen[25][81];
 // stru = 0-none 1-tree 2-stone 3-dungeon 4-playersmth
 // safe = 0-no | 1-yes
 int World[5000][5000];
-int playerPosition[2] {6, 6};
+int playerPosition[2] {0, 0};
 
 class engine {
     public:
@@ -61,10 +61,10 @@ class engine {
     }
     void borders() {
         if (playerPosition[0]<0) {
-            playerPosition[0]+=1;
+            playerPosition[0]=0;
         }
         if (playerPosition[1]<0) {
-            playerPosition[1]+=1;
+            playerPosition[1]=0;
         }
     }
     void overWorldGeneration(int w, int l) {
@@ -293,16 +293,10 @@ class player {
         return playerPosition[1];
     }
     void changePPosY(int n) {
-        playerPosition[0]+=n;
+        playerPosition[0]+=n/*/2*/;
     }
     void changePPosX(int n) {
-        playerPosition[1]+=n;
-    }
-    void changePPosminY(int n) {
-        playerPosition[0]-=n;
-    }
-    void changePPosminX(int n) {
-        playerPosition[1]-=n;
+        playerPosition[1]+=n/*/2*/;
     }
     void printHp(int hp) {
         graphcs.setColor(1);
@@ -378,6 +372,10 @@ class world {
     }
 };
 
+void menu() {
+    string menuButtons[2];
+}
+
 int main() {
     graphics graphicsHandler;
     userInterface uiHandler;
@@ -410,7 +408,6 @@ int main() {
         graphicsHandler.drawTerrain();
         graphicsHandler.drawTree(World[playerPosition[0]][playerPosition[1]]%100/10);
         graphicsHandler.drawStone(World[playerPosition[0]][playerPosition[1]]%100/10);
-        getWorld.setTreeHp(World[playerPosition[0]][playerPosition[1]]%100/10);
 
         graphicsHandler.printScreen();
         player.printHp(10);
@@ -422,6 +419,7 @@ int main() {
             cout<<World[playerPosition[0]][playerPosition[1]]<<endl;
         }
         while(1) {
+            Sleep(100);
             controlsHandler.input();
             player.switchDebug();
             engineHandler.borders();
@@ -429,13 +427,8 @@ int main() {
                 engineHandler.borders();
                 break;
             }
-            if (World[playerPosition[0]][playerPosition[1]]%100/10==1) {
-                getWorld.hurtTree(World[playerPosition[0]][playerPosition[1]]%100/10);
-                getWorld.killTree(World[playerPosition[0]][playerPosition[1]]%100/10, 0);
-            }
-            Sleep(100);
         }
-        Sleep(100);
+        Sleep(50);
         system("cls");
     }
 }

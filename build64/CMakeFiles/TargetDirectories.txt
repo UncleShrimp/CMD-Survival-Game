@@ -1,0 +1,3 @@
+C:/Users/danaa/Downloads/ProjectSC/build64/CMakeFiles/main.dir
+C:/Users/danaa/Downloads/ProjectSC/build64/CMakeFiles/ALL_BUILD.dir
+C:/Users/danaa/Downloads/ProjectSC/build64/CMakeFiles/ZERO_CHECK.dir
