@@ -22,6 +22,7 @@ string screen[25][81];
                                    #
                                    #
 33333333333333333333333333333333333333333333333333333333333333333333333333333333
+                                                                               %
 
 
 
@@ -161,6 +162,50 @@ class graphics {
                 }
                 if ((World[playerPosition[0]][playerPosition[1]]/100) == 6) {
                     screen[y][x]="#";
+                }
+            }
+        }
+    }
+    // 27 - 49
+    // 36 - 41
+    void drawUndergroundEnter(int structure) {
+        if (structure == 3) {
+            /*
+            for (int y=24; y>20; y++) {
+                for (int x=26; x<48; x++) {
+                    screen[y][x]="!";
+                }
+            }*/
+            for (int y=14; y<20; y++) {
+                if (y==14) {
+                    for (int x=35; x<40; x++) {
+                        screen[y][x]="O";
+                    }
+                }
+                if (y==15) {
+                    for (int x=31; x<44; x++) {
+                        screen[y][x]="O";
+                    }
+                }
+                if (y==16) {
+                    for (int x=28; x<47; x++) {
+                        screen[y][x]="O";
+                    }
+                }
+                if (y==17) {
+                    for (int x=27; x<48; x++) {
+                        screen[y][x]="O";
+                    }
+                }
+                if (y>17 && y<20) {
+                    for (int x=26; x<49; x++) {
+                        screen[y][x]="O";
+                    }
+                }
+            }
+            for (int y=17; y<20; y++) {
+                for (int x=35; x<40; x++) {
+                    screen[y][x]=" ";
                 }
             }
         }
@@ -416,6 +461,7 @@ class controls {
                 getGraphics.drawTerrain();
                 getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]]%100/10);
                 getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]]%100/10);
+                getGraphics.drawUndergroundEnter(World[playerPosition[0]][playerPosition[1]]%100/10);
 
                 getGraphics.printScreen();
                 getPlayer.printHp(10);
@@ -500,6 +546,7 @@ int main() {
         graphicsHandler.drawTerrain();
         graphicsHandler.drawTree(World[playerPosition[0]][playerPosition[1]]%100/10);
         graphicsHandler.drawStone(World[playerPosition[0]][playerPosition[1]]%100/10);
+        graphicsHandler.drawUndergroundEnter(World[playerPosition[0]][playerPosition[1]]%100/10);
 
         graphicsHandler.printScreen();
         player.printHp(10);
