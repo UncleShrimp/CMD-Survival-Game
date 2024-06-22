@@ -42,10 +42,11 @@ string screen[25][81];
 
 // chunk attributes: temperature, structure, safe
 // temp = -20(2)   |   19(1)   |    60(6)
-// stru = 0-none 1-tree 2-stone 3-dungeon 4-playersmth
+// stru = 0-none 1-tree 2-stone 3-dungeon 4-playersmth 5-coal 6-iron 7-ruby 8-lava
 // safe = 0-no | 1-yes
 int World[5000][5000];
-int playerPosition[2] {0, 0};
+int undergroundWorld[5000][5000];
+int playerPosition[2] {2499, 2499};
 // 1 - wood; 2 - stone
 vector<int> inventory;
 vector<int> ItemAmount;
@@ -69,6 +70,12 @@ class engine {
         }
         if (playerPosition[1]<0) {
             playerPosition[1]=0;
+        }
+        if (playerPosition[0]>2499) {
+            playerPosition[0]=2498;
+        }
+        if (playerPosition[1]>2499) {
+            playerPosition[1]=2498;
         }
     }
     void overWorldGeneration(int w, int l) {
@@ -98,6 +105,26 @@ class engine {
                 }
                 if (genRes==3) {
                     World[y][x]+=4*10;
+                }
+            }
+        }
+    }
+    void undergroundGeneration(int w, int l) {
+        for (int y=0; y<w; y++) {
+            for (int x=0; x<l; x++) {
+                int genRes = generator(0, 4);
+                // loot
+                if (genRes==0) {
+                    undergroundWorld[y][x]=5;
+                }
+                if (genRes==1) {
+                    undergroundWorld[y][x]=6;
+                }
+                if (genRes==2) {
+                    undergroundWorld[y][x]=7;
+                }
+                if (genRes==3) {
+                    undergroundWorld[y][x]=8;
                 }
             }
         }
@@ -203,6 +230,7 @@ class graphics {
                     }
                 }
             }
+            //130
             for (int y=17; y<20; y++) {
                 for (int x=35; x<40; x++) {
                     screen[y][x]=" ";
@@ -527,6 +555,7 @@ int main() {
     Sleep(200);
     cout<<"Generating ...";
     engineHandler.overWorldGeneration(5000, 5000);
+    engineHandler.undergroundGeneration(5000, 5000);
     /*for (int i=0; i<1000; i++) {
         for (int ii=0; ii<1000; ii++) {
             cout<<world[i][ii];
