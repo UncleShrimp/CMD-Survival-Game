@@ -45,6 +45,9 @@ string screen[25][81];
 // safe = 0-no | 1-yes
 int World[5000][5000];
 int playerPosition[2] {0, 0};
+// 1 - wood; 2 - stone
+vector<int> inventory;
+vector<int> ItemAmount;
 
 class engine {
     public:
@@ -102,6 +105,22 @@ class engine {
 class graphics {
     engine engReference;
     public:
+    void printInventory(vector<int> &arr) {
+        for (int i=0; i<arr.size(); i++) {
+            setColor(13);
+            switch (arr[i])
+            {
+            case 1:
+                cout<<"Wood x"<<ItemAmount[i]<<" ";
+                break;
+            case 2:
+                cout<<"Stone x"<<ItemAmount[i]<<" ";
+                break;
+            default:
+                break;
+            }
+        }
+    }
     void printScreen() {
         for (int y=0; y<25; y++) {
             for (int x=0; x<81; x++) {
@@ -267,11 +286,11 @@ class player {
     int playerDamage=5;
     int hpAm=10;
     int hungerAm=10;
-    int playerInventory;
     vector<string> hpUI {"X", "X", "X", "X", "X", "X", "X", "X", "X", "X"};
     vector<string> hungrUI {"X", "X", "X", "X", "X", "X", "X", "X", "X", "X"};
 
     public:
+    int inventory[10];
     int getDamage() {
         return playerDamage;
     }
@@ -337,6 +356,79 @@ class controls {
         if (GetAsyncKeyState(VK_LEFT)) {
             getPlayer.changePPosX(-1);
             velocity=1;
+        }
+        if (GetAsyncKeyState(VK_SPACE)) {
+            if (World[playerPosition[0]][playerPosition[1]]%100/10 == 1 && World[playerPosition[0]][playerPosition[1]]/100 != 6) {
+                int g=0;
+                g=World[playerPosition[0]][playerPosition[1]]/100*100;
+                World[playerPosition[0]][playerPosition[1]]=g;
+                bool foundItem=false;
+                for (int i=0; i<inventory.size(); i++) {
+                    if (inventory[i]==1) {
+                        ItemAmount[i]+=1;
+                        foundItem=true;
+                    }
+                }
+                if (foundItem==false) {
+                    inventory.push_back(1);
+                    ItemAmount.push_back(1);
+                }
+                system("cls");
+                getGraphics.setColor(7);
+
+                getGraphics.clearScreen();
+                getGraphics.drawTerrain();
+                getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]]%100/10);
+                getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]]%100/10);
+
+                getGraphics.printScreen();
+                getPlayer.printHp(10);
+                cout<<""<<endl;
+                getPlayer.printHungr(10);
+                cout<<""<<endl;
+                getGraphics.printInventory(inventory);
+                cout<<""<<endl;
+                if (getPlayer.getDegugState()==true) {
+                    cout<<playerPosition[0]<<" "<<playerPosition[1]<<endl;
+                    cout<<World[playerPosition[0]][playerPosition[1]]<<endl;
+                }
+            }
+
+            if (World[playerPosition[0]][playerPosition[1]]%100/10 == 2) {
+                int g=0;
+                g=World[playerPosition[0]][playerPosition[1]]/100*100;
+                World[playerPosition[0]][playerPosition[1]]=g;
+                bool foundItem=false;
+                for (int i=0; i<inventory.size(); i++) {
+                    if (inventory[i]==2) {
+                        ItemAmount[i]+=1;
+                        foundItem=true;
+                    }
+                }
+                if (foundItem==false) {
+                    inventory.push_back(2);
+                    ItemAmount.push_back(1);
+                }
+                system("cls");
+                getGraphics.setColor(7);
+
+                getGraphics.clearScreen();
+                getGraphics.drawTerrain();
+                getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]]%100/10);
+                getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]]%100/10);
+
+                getGraphics.printScreen();
+                getPlayer.printHp(10);
+                cout<<""<<endl;
+                getPlayer.printHungr(10);
+                cout<<""<<endl;
+                getGraphics.printInventory(inventory);
+                cout<<""<<endl;
+                if (getPlayer.getDegugState()==true) {
+                    cout<<playerPosition[0]<<" "<<playerPosition[1]<<endl;
+                    cout<<World[playerPosition[0]][playerPosition[1]]<<endl;
+                }
+            }
         }
         return velocity;
     }
@@ -414,16 +506,19 @@ int main() {
         cout<<""<<endl;
         player.printHungr(10);
         cout<<""<<endl;
+        graphicsHandler.printInventory(inventory);
+        cout<<""<<endl;
         if (player.getDegugState()==true) {
             cout<<playerPosition[0]<<" "<<playerPosition[1]<<endl;
             cout<<World[playerPosition[0]][playerPosition[1]]<<endl;
         }
         while(1) {
-            Sleep(100);
+            Sleep(10);
             controlsHandler.input();
             player.switchDebug();
             engineHandler.borders();
-            if (controlsHandler.input()!=0) {
+            int g=controlsHandler.input();
+            if (g==1) {
                 engineHandler.borders();
                 break;
             }
