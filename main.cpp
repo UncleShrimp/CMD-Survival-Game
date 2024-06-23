@@ -50,6 +50,7 @@ int playerPosition[2] {2499, 2499};
 // 1 - wood; 2 - stone
 vector<int> inventory;
 vector<int> ItemAmount;
+bool under=false;
 
 class engine {
     public:
@@ -71,11 +72,11 @@ class engine {
         if (playerPosition[1]<0) {
             playerPosition[1]=0;
         }
-        if (playerPosition[0]>2499) {
-            playerPosition[0]=2498;
+        if (playerPosition[0]>4999) {
+            playerPosition[0]=4998;
         }
-        if (playerPosition[1]>2499) {
-            playerPosition[1]=2498;
+        if (playerPosition[1]>4999) {
+            playerPosition[1]=4998;
         }
     }
     void overWorldGeneration(int w, int l) {
@@ -102,9 +103,6 @@ class engine {
                 }
                 if (genRes==2) {
                     World[y][x]+=3*10;
-                }
-                if (genRes==3) {
-                    World[y][x]+=4*10;
                 }
             }
         }
@@ -178,20 +176,32 @@ class graphics {
         }
     }
 
-    void drawTerrain() {
-        for (int y=24; y>20; y--) {
-            for (int x=0; x<81; x++) {
-                if ((World[playerPosition[0]][playerPosition[1]]/100) == 1) {
-                    screen[y][x]="|";
-                }
-                if ((World[playerPosition[0]][playerPosition[1]]/100) == 2) {
-                    screen[y][x]="*";
-                }
-                if ((World[playerPosition[0]][playerPosition[1]]/100) == 6) {
-                    screen[y][x]="#";
+    void drawTerrain(int y, int x) {
+        if (World[y][x]%10!=1) {
+            for (int y=24; y>20; y--) {
+                for (int x=0; x<81; x++) {
+                    if ((World[playerPosition[0]][playerPosition[1]]/100) == 1) {
+                        screen[y][x]="|";
+                    }
+                    if ((World[playerPosition[0]][playerPosition[1]]/100) == 2) {
+                        screen[y][x]="*";
+                    }
+                    if ((World[playerPosition[0]][playerPosition[1]]/100) == 6) {
+                        screen[y][x]="#";
+                    }
                 }
             }
         }
+        //4
+        if (World[y][x]%10==1) {
+            for (int y=24; y>20; y--) {
+                for (int x=0; x<81; x++) {
+                    setColor(4);
+                    screen[y][x]="_";
+                }
+            }
+        }
+        setColor(7);
     }
     // 27 - 49
     // 36 - 41
@@ -333,7 +343,10 @@ class graphics {
                 default:
                     break;
                 }
-        }        
+        }     
+        if ((World[playerPosition[0]][playerPosition[1]]%10) == 1) {
+            setColor(4);
+        }   
     }
     void setColor(int color) { // color E [0, 15]
         SetConsoleTextAttribute(hc, color);
@@ -430,6 +443,32 @@ class controls {
             getPlayer.changePPosX(-1);
             velocity=1;
         }
+        if (GetAsyncKeyState('B')) {
+            //build
+            if (World[playerPosition[0]][playerPosition[1]]%10 == 0 && World[playerPosition[0]][playerPosition[1]]%100/10==0) {
+                World[playerPosition[0]][playerPosition[1]]++;
+                velocity=3;
+                system("cls");
+                getGraphics.setColor(7);
+
+                getGraphics.clearScreen();
+                getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
+                getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]]%100/10);
+                getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]]%100/10);
+
+                getGraphics.printScreen();
+                getPlayer.printHp(10);
+                cout<<""<<endl;
+                getPlayer.printHungr(10);
+                cout<<""<<endl;
+                getGraphics.printInventory(inventory);
+                cout<<""<<endl;
+                if (getPlayer.getDegugState()==true) {
+                    cout<<playerPosition[0]<<" "<<playerPosition[1]<<endl;
+                    cout<<World[playerPosition[0]][playerPosition[1]]<<endl;
+                }
+            }
+        }
         if (GetAsyncKeyState(VK_SPACE)) {
             if (World[playerPosition[0]][playerPosition[1]]%100/10 == 1 && World[playerPosition[0]][playerPosition[1]]/100 != 6) {
                 int g=0;
@@ -450,7 +489,7 @@ class controls {
                 getGraphics.setColor(7);
 
                 getGraphics.clearScreen();
-                getGraphics.drawTerrain();
+                getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
                 getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]]%100/10);
                 getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]]%100/10);
 
@@ -486,7 +525,7 @@ class controls {
                 getGraphics.setColor(7);
 
                 getGraphics.clearScreen();
-                getGraphics.drawTerrain();
+                getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
                 getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]]%100/10);
                 getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]]%100/10);
                 getGraphics.drawUndergroundEnter(World[playerPosition[0]][playerPosition[1]]%100/10);
@@ -572,10 +611,12 @@ int main() {
         graphicsHandler.setColor(7);
 
         graphicsHandler.clearScreen();
-        graphicsHandler.drawTerrain();
-        graphicsHandler.drawTree(World[playerPosition[0]][playerPosition[1]]%100/10);
-        graphicsHandler.drawStone(World[playerPosition[0]][playerPosition[1]]%100/10);
-        graphicsHandler.drawUndergroundEnter(World[playerPosition[0]][playerPosition[1]]%100/10);
+        if (under==false) {
+            graphicsHandler.drawTerrain(playerPosition[0], playerPosition[1]);
+            graphicsHandler.drawTree(World[playerPosition[0]][playerPosition[1]]%100/10);
+            graphicsHandler.drawStone(World[playerPosition[0]][playerPosition[1]]%100/10);
+            graphicsHandler.drawUndergroundEnter(World[playerPosition[0]][playerPosition[1]]%100/10);
+        }
 
         graphicsHandler.printScreen();
         player.printHp(10);
@@ -596,6 +637,9 @@ int main() {
             int g=controlsHandler.input();
             if (g==1) {
                 engineHandler.borders();
+                break;
+            }
+            if (g==3) {
                 break;
             }
         }
