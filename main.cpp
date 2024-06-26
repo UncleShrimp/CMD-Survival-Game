@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include <conio.h>
 
+
 using namespace std;
 HANDLE hc = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -137,10 +138,10 @@ class graphics {
             switch (arr[i])
             {
             case 1:
-                cout<<"Wood x"<<ItemAmount[i]<<" ";
+                if (arr[i]>0) {cout<<"Wood x"<<ItemAmount[i]<<" ";}
                 break;
             case 2:
-                cout<<"Stone x"<<ItemAmount[i]<<" ";
+                if (arr[i]>0) {cout<<"Stone x"<<ItemAmount[i]<<" ";}
                 break;
             default:
                 break;
@@ -203,6 +204,35 @@ class graphics {
         }
         setColor(7);
     }
+
+    void drawMinimap(int pY, int pX) {
+        int minimap[5][5];
+        int pPosY=3;
+        int pPosX=3;
+        // 2f 7s 6d
+        for (int y=0; y<5; y++) {
+            for (int x=0; x<5; x++) {
+                switch (World[pY-y][pX-x]/100) {
+                case 2: // snow
+                    setColor(7);
+                    cout<<World[pY-y][pX-x]/100<<" ";
+                    break;
+                case 1: // forest
+                    setColor(2);
+                    cout<<World[pY-y][pX-x]/100<<" ";
+                    break;
+                case 6: // desert
+                    setColor(6);
+                    cout<<World[pY-y][pX-x]/100<<" ";
+                    break;
+                default:
+                    break;
+                }
+            }
+            cout<<endl;
+        }
+    }
+
     // 27 - 49
     // 36 - 41
     void drawUndergroundEnter(int structure) {
@@ -368,7 +398,7 @@ class player {
     graphics graphcs;
 
     private:
-    bool debugMode=false;
+    bool debugMode=true;
     int playerDamage=5;
     int hpAm=10;
     int hungerAm=10;
@@ -427,45 +457,35 @@ class controls {
     public:
     int input() {
         int velocity = 0;
-        if (GetAsyncKeyState(VK_UP)) {
-            getPlayer.changePPosY(-1); // upper in array
-            velocity=1;
-        }
-        if (GetAsyncKeyState(VK_DOWN)) {
-            getPlayer.changePPosY(1); // lower in array
-            velocity=1;
-        }
-        if (GetAsyncKeyState(VK_RIGHT)) {
-            getPlayer.changePPosX(1);
-            velocity=1;
-        }
-        if (GetAsyncKeyState(VK_LEFT)) {
-            getPlayer.changePPosX(-1);
-            velocity=1;
-        }
         if (GetAsyncKeyState('B')) {
             //build
             if (World[playerPosition[0]][playerPosition[1]]%10 == 0 && World[playerPosition[0]][playerPosition[1]]%100/10==0) {
-                World[playerPosition[0]][playerPosition[1]]++;
-                velocity=3;
-                system("cls");
-                getGraphics.setColor(7);
+                for (int i=0; i<inventory.size(); i++) {
+                    if (inventory[i]==1) {
+                        if (ItemAmount[i]>0) {
+                            World[playerPosition[0]][playerPosition[1]]++;
+                            ItemAmount[i]--;
+                            system("cls");
+                            getGraphics.setColor(7);
 
-                getGraphics.clearScreen();
-                getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
-                getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]]%100/10);
-                getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]]%100/10);
+                            getGraphics.clearScreen();
+                            getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
+                            getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]]%100/10);
+                            getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]]%100/10);
 
-                getGraphics.printScreen();
-                getPlayer.printHp(10);
-                cout<<""<<endl;
-                getPlayer.printHungr(10);
-                cout<<""<<endl;
-                getGraphics.printInventory(inventory);
-                cout<<""<<endl;
-                if (getPlayer.getDegugState()==true) {
-                    cout<<playerPosition[0]<<" "<<playerPosition[1]<<endl;
-                    cout<<World[playerPosition[0]][playerPosition[1]]<<endl;
+                            getGraphics.printScreen();
+                            getPlayer.printHp(10);
+                            cout<<""<<endl;
+                            getPlayer.printHungr(10);
+                            cout<<""<<endl;
+                            getGraphics.printInventory(inventory);
+                            cout<<""<<endl;
+                            if (getPlayer.getDegugState()==true) {
+                                cout<<playerPosition[0]<<" "<<playerPosition[1]<<endl;
+                                cout<<World[playerPosition[0]][playerPosition[1]]<<endl;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -543,6 +563,7 @@ class controls {
                 }
             }
         }
+
         return velocity;
     }
 };
@@ -625,24 +646,51 @@ int main() {
         cout<<""<<endl;
         graphicsHandler.printInventory(inventory);
         cout<<""<<endl;
+        graphicsHandler.drawMinimap(playerPosition[0], playerPosition[1]);
+        cout<<endl;
         if (player.getDegugState()==true) {
             cout<<playerPosition[0]<<" "<<playerPosition[1]<<endl;
             cout<<World[playerPosition[0]][playerPosition[1]]<<endl;
         }
+        /*
         while(1) {
             Sleep(10);
             controlsHandler.input();
             player.switchDebug();
             engineHandler.borders();
-            int g=controlsHandler.input();
-            if (g==1) {
+            if (controlsHandler.input()==1) {
                 engineHandler.borders();
                 break;
             }
-            if (g==3) {
+        }*/
+        /*
+        Sleep(10);
+        controlsHandler.input();
+        player.switchDebug();
+        engineHandler.borders();
+        if (controlsHandler.input()==1) {
+            engineHandler.borders();
+        }*/
+
+        while (1) {
+            controlsHandler.input();
+            if (GetAsyncKeyState(VK_UP)) {
+                playerPosition[0]-=1;
                 break;
             }
-        }
+            if (GetAsyncKeyState(VK_DOWN)) {
+                playerPosition[0]+=1;
+                break;
+            }
+            if (GetAsyncKeyState(VK_RIGHT)) {
+                playerPosition[1]+=1;
+                break;
+            }
+            if (GetAsyncKeyState(VK_LEFT)) {
+                playerPosition[1]-=1;
+                break;
+            }
+        }   
         Sleep(50);
         system("cls");
     }
