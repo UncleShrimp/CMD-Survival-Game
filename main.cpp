@@ -55,6 +55,14 @@ bool under=false;
 
 class engine {
     public:
+    int tickHunger=5;
+
+    void printStats() {
+        cout<<playerPosition[0]<<" "<<playerPosition[1]<<endl;
+        cout<<World[playerPosition[0]][playerPosition[1]]<<endl;
+        cout<<tickHunger<<endl;
+    }
+
     int generator(int a, int b) {
         int result;
         result = a+rand()%b;
@@ -210,27 +218,114 @@ class graphics {
         int pPosY=3;
         int pPosX=3;
         // 2f 7s 6d
-        for (int y=0; y<5; y++) {
-            for (int x=0; x<5; x++) {
-                switch (World[pY-y][pX-x]/100) {
-                case 2: // snow
-                    setColor(7);
-                    cout<<World[pY-y][pX-x]/100<<" ";
-                    break;
-                case 1: // forest
-                    setColor(2);
-                    cout<<World[pY-y][pX-x]/100<<" ";
-                    break;
-                case 6: // desert
-                    setColor(6);
-                    cout<<World[pY-y][pX-x]/100<<" ";
-                    break;
-                default:
-                    break;
-                }
+        /*
+        cout<<World[pY-2][pX-2]<<" "<<World[pY-2][pX-1]<<" "<<World[pY-2][pX]<<" "<<World[pY-2][pX+1]<<" "<<World[pY-2][pX+2]<<endl;
+        cout<<World[pY-1][pX-2]<<" "<<World[pY-1][pX-1]<<" "<<World[pY-1][pX]<<" "<<World[pY-1][pX+1]<<" "<<World[pY-1][pX+2]<<endl;
+        cout<<World[pY][pX-2]<<" "<<World[pY][pX-1]<<" "<<"P"<<" "<<World[pY-2][pX+1]<<" "<<World[pY][pX+2]<<endl;
+        cout<<World[pY+1][pX-2]<<" "<<World[pY+1][pX-1]<<" "<<World[pY+1][pX]<<" "<<World[pY+1][pX+1]<<" "<<World[pY+1][pX+2]<<endl;
+        cout<<World[pY+2][pX-2]<<" "<<World[pY+2][pX-1]<<" "<<World[pY+2][pX]<<" "<<World[pY+2][pX+1]<<" "<<World[pY+2][pX+2]<<endl;*/
+        for (int x=-2; x<3; x++) {
+            switch (World[pY-2][pX+x]/100)
+            {
+            case 2:
+                setColor(7);
+                break;
+            case 1:
+                setColor(2);
+                break;
+            case 6:
+                setColor(6);
+                break;
+            default:
+                break;
             }
-            cout<<endl;
+            cout<<World[pY-2][pX+x]%10<<"  ";
         }
+        cout<<endl;
+        for (int x=-2; x<3; x++) {
+            switch (World[pY-1][pX+x]/100)
+            {
+            case 2:
+                setColor(7);
+                break;
+            case 1:
+                setColor(2);
+                break;
+            case 6:
+                setColor(6);
+                break;
+            default:
+                break;
+            }
+            cout<<World[pY-1][pX+x]%10<<"  ";
+        }
+        cout<<endl;
+        for (int x=-2; x<3; x++) {
+            switch (World[pY][pX+x]/100)
+            {
+            case 2:
+                setColor(7);
+                break;
+            case 1:
+                setColor(2);
+                break;
+            case 6:
+                setColor(6);
+                break;
+            default:
+                break;
+            }
+            if (x==0) {
+                cout<<"X"<<"  ";
+            }
+            else {
+                cout<<World[pY][pX+x]%10<<"  ";
+            }
+        }
+        cout<<endl;
+        for (int x=-2; x<3; x++) {
+            switch (World[pY+1][pX+x]/100)
+            {
+            case 2:
+                setColor(7);
+                break;
+            case 1:
+                setColor(2);
+                break;
+            case 6:
+                setColor(6);
+                break;
+            default:
+                break;
+            }
+            cout<<World[pY+1][pX+x]%10<<"  ";
+        }
+        cout<<endl;
+        for (int x=-2; x<3; x++) {
+            switch (World[pY+2][pX+x]/100)
+            {
+            case 2:
+                setColor(7);
+                break;
+            case 1:
+                setColor(2);
+                break;
+            case 6:
+                setColor(6);
+                break;
+            default:
+                break;
+            }
+            cout<<World[pY+2][pX+x]%10<<"  ";
+        }
+        cout<<endl;
+        /*
+        0 0 0 0 0
+        0 0 0 0 0
+        0 0 p 0 0
+        0 0 0 0 0
+        0 0 0 0 0
+        */
     }
 
     // 27 - 49
@@ -407,6 +502,12 @@ class player {
 
     public:
     int inventory[10];
+    int changeHunger(int n) {
+        hungerAm-=n;
+        for (int i=0; i<n; i++) {
+            hungrUI.pop_back();
+        }
+    }
     int getDamage() {
         return playerDamage;
     }
@@ -454,9 +555,39 @@ class player {
 class controls {
     player getPlayer;
     graphics getGraphics;
+    engine getEngine;
     public:
     int input() {
         int velocity = 0;
+        if (GetAsyncKeyState('A')) {
+            if (World[playerPosition[0]][playerPosition[1]]%100/10==3) {
+                int g=0;
+                g=World[playerPosition[0]][playerPosition[1]]/100*100;
+                World[playerPosition[0]][playerPosition[1]]=g;
+                system("cls");
+                getGraphics.setColor(7);
+
+                getGraphics.clearScreen();
+                getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
+                getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]]%100/10);
+                getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]]%100/10);
+
+                getGraphics.printScreen();
+                getPlayer.printHp(10);
+                cout<<""<<endl;
+                getPlayer.printHungr(10);
+                cout<<""<<endl;
+                getGraphics.printInventory(inventory);
+                cout<<""<<endl;
+                cout<<""<<endl;
+                getGraphics.drawMinimap(playerPosition[0], playerPosition[1]);
+                cout<<endl;
+                if (getPlayer.getDegugState()==true) {
+                    getEngine.printStats();
+                }
+                getEngine.tickHunger-=1;
+            }
+        }
         if (GetAsyncKeyState('B')) {
             //build
             if (World[playerPosition[0]][playerPosition[1]]%10 == 0 && World[playerPosition[0]][playerPosition[1]]%100/10==0) {
@@ -480,10 +611,13 @@ class controls {
                             cout<<""<<endl;
                             getGraphics.printInventory(inventory);
                             cout<<""<<endl;
+                            cout<<""<<endl;
+                            getGraphics.drawMinimap(playerPosition[0], playerPosition[1]);
+                            cout<<endl;
                             if (getPlayer.getDegugState()==true) {
-                                cout<<playerPosition[0]<<" "<<playerPosition[1]<<endl;
-                                cout<<World[playerPosition[0]][playerPosition[1]]<<endl;
+                                getEngine.printStats();
                             }
+                            getEngine.tickHunger-=1;
                         }
                     }
                 }
@@ -520,10 +654,12 @@ class controls {
                 cout<<""<<endl;
                 getGraphics.printInventory(inventory);
                 cout<<""<<endl;
+                getGraphics.drawMinimap(playerPosition[0], playerPosition[1]);
+                cout<<endl;
                 if (getPlayer.getDegugState()==true) {
-                    cout<<playerPosition[0]<<" "<<playerPosition[1]<<endl;
-                    cout<<World[playerPosition[0]][playerPosition[1]]<<endl;
+                    getEngine.printStats();
                 }
+                getEngine.tickHunger-=1;
             }
 
             if (World[playerPosition[0]][playerPosition[1]]%100/10 == 2) {
@@ -557,10 +693,12 @@ class controls {
                 cout<<""<<endl;
                 getGraphics.printInventory(inventory);
                 cout<<""<<endl;
+                getGraphics.drawMinimap(playerPosition[0], playerPosition[1]);
+                cout<<endl;
                 if (getPlayer.getDegugState()==true) {
-                    cout<<playerPosition[0]<<" "<<playerPosition[1]<<endl;
-                    cout<<World[playerPosition[0]][playerPosition[1]]<<endl;
+                    getEngine.printStats();
                 }
+                getEngine.tickHunger-=1;
             }
         }
 
@@ -649,8 +787,11 @@ int main() {
         graphicsHandler.drawMinimap(playerPosition[0], playerPosition[1]);
         cout<<endl;
         if (player.getDegugState()==true) {
-            cout<<playerPosition[0]<<" "<<playerPosition[1]<<endl;
-            cout<<World[playerPosition[0]][playerPosition[1]]<<endl;
+            engineHandler.printStats();
+        }
+        if (engineHandler.tickHunger==0) {
+            player.changeHunger(1);
+            engineHandler.tickHunger=5;
         }
         /*
         while(1) {
@@ -676,18 +817,22 @@ int main() {
             controlsHandler.input();
             if (GetAsyncKeyState(VK_UP)) {
                 playerPosition[0]-=1;
+                engineHandler.tickHunger-=1;
                 break;
             }
             if (GetAsyncKeyState(VK_DOWN)) {
                 playerPosition[0]+=1;
+                engineHandler.tickHunger-=1;
                 break;
             }
             if (GetAsyncKeyState(VK_RIGHT)) {
                 playerPosition[1]+=1;
+                engineHandler.tickHunger-=1;
                 break;
             }
             if (GetAsyncKeyState(VK_LEFT)) {
                 playerPosition[1]-=1;
+                engineHandler.tickHunger-=1;
                 break;
             }
         }   
