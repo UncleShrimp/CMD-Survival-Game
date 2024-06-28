@@ -183,6 +183,11 @@ class graphics {
                         setColor(8);
                     }
                 }
+                if (y>=14 && y<20) {
+                    if ((World[playerPosition[0]][playerPosition[1]]%10) == 2) {
+                        setColor(8);
+                    }
+                }
                 cout<<screen[y][x];
             }
             cout<<""<<endl;
@@ -456,7 +461,7 @@ class graphics {
     
     
     void drawFurnace(int structure) {
-        if (World[playerPosition[0]][playerPosition[1]]/100==2) {
+        if (World[playerPosition[0]][playerPosition[1]]%10==2 && structure==0) {
             for (int y=14; y<20; y++) {
                 if (y==14) {
                     for (int x=35; x<40; x++) {
@@ -541,7 +546,7 @@ class graphics {
                     break;
                 }
         }     
-        if ((World[playerPosition[0]][playerPosition[1]]%10) == 1) {
+        if ((World[playerPosition[0]][playerPosition[1]]%10) >= 1) {
             setColor(4);
         }   
     }
@@ -565,7 +570,7 @@ class player {
     graphics graphcs;
 
     private:
-    bool debugMode=false;
+    bool debugMode=true;
     int playerDamage=5;
     int hpAm=10;
     int hungerAm=10;
@@ -632,7 +637,7 @@ class controls {
         if (GetAsyncKeyState('F')) {
             for (int i=0; i<inventory.size(); i++) {
                 if (inventory[i]==2 && ItemAmount[i]>=5) {
-                    if (World[playerPosition[0]][playerPosition[1]]/100==1) {
+                    if (World[playerPosition[0]][playerPosition[1]]%10==1) {
                     World[playerPosition[0]][playerPosition[1]]++;
                     ItemAmount[i]-=5;
 
