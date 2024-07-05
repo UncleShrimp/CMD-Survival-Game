@@ -15,9 +15,9 @@ string screen[25][81];
                             QQQQQQQQQQQQQQQQ
                             QQQQQQQQQQQQQQQQ
                             QQQQQQQQQQQQQQQQ
-                               QQQQQQQQQQ
-                                   #
-                                   #
+        ooooo                  QQQQQQQQQQ                  ooooo
+       ooooooo                     #                      ooooooo
+        ooooo                      #                       ooooo
                                    #
                                    #
                                    #
@@ -63,6 +63,7 @@ int playerPosition[2]{ 2499, 2499 };
 vector<int> inventory;
 vector<int> ItemAmount;
 bool under = false;
+int worldTime=20;
 
 class engine {
 public:
@@ -146,9 +147,50 @@ public:
         }
     }
 };
+
 class graphics {
     engine engReference;
 public:
+    // 14
+    // 24 "hours"
+    void drawSun(int time) {
+        clearScreen();
+        // morning
+        if (time>3 && time<12) {
+            //8-13
+            for (int i=8; i<13; i++) {
+                screen[16][i]="o";
+            }
+            for (int i=7; i<14; i++) {
+                screen[17][i]="o";
+            }
+            for (int i=8; i<13; i++) {
+                screen[18][i]="o";
+            }
+        }
+        if (time>=12 && time<17) {
+            for (int i=33; i<38; i++) {
+                screen[4][i]="o";
+            }
+            for (int i=32; i<39; i++) {
+                screen[5][i]="o";
+            }
+            for (int i=33; i<38; i++) {
+                screen[6][i]="o";
+            }
+        }
+        if (time>=17 && time<=23 || time>=0 && time<5) {
+            for (int i=59; i<64; i++) {
+                screen[16][i]="o";
+            }
+            for (int i=58; i<65; i++) {
+                screen[17][i]="o";
+            }
+            for (int i=59; i<64; i++) {
+                screen[18][i]="o";
+            }
+        }
+    }
     void printInventory(vector<int>& arr) {
         for (int i = 0; i < arr.size(); i++) {
             setColor(13);
@@ -171,6 +213,7 @@ public:
                 if (y >= 20) {
                     grass();
                 }
+                
                 if (y >= 8 && y < 14) {
                     if ((World[playerPosition[0]][playerPosition[1]] / 100) == 1 && (World[playerPosition[0]][playerPosition[1]] / 100) != 6) {
                         setColor(10);
@@ -181,6 +224,28 @@ public:
                         setColor(8);
                     }
                 }
+                ///////////////////////////////////////
+                if (worldTime<20 && worldTime>=5) {
+                    if (worldTime>3 && worldTime<12) {
+                        if (x>=7 && x<14 && y>=16 && y<=18) {
+                            setColor(7);
+                            setColor(14);
+                        }
+                    }
+                    if (worldTime>=12 && worldTime<17) {
+                        if (x>=32 && x<39 && y>=4 && y<=6) {
+                            setColor(7);
+                            setColor(14);
+                        }
+                    }
+                    if (worldTime>=17 && worldTime<=23 || worldTime>=0 && worldTime<5) {
+                        if (x>=58 && x<65 && y>=16 && y<=18) {
+                            setColor(7);
+                            setColor(14);
+                        }
+                    }
+                }
+                ////////////////////////////////////////////////////////
                 if (y >= 14 && y < 20) {
                     if ((World[playerPosition[0]][playerPosition[1]] % 10) == 2) {
                         setColor(8);
@@ -258,10 +323,7 @@ public:
             default:
                 break;
             }
-            if (World[pY - 2][pX + x] % 10 >= 1) {
-                // 14
-                setColor(4);
-            }
+            
             cout << World[pY - 2][pX + x] % 10 << "  ";
         }
         cout << endl;
@@ -283,10 +345,7 @@ public:
             default:
                 break;
             }
-            if (World[pY - 2][pX + x] % 10 >= 1) {
-                // 14
-                setColor(4);
-            }
+            
             cout << World[pY - 1][pX + x] % 10 << "  ";
         }
         cout << endl;
@@ -308,10 +367,7 @@ public:
             default:
                 break;
             }
-            if (World[pY - 2][pX + x] % 10 >= 1) {
-                // 14
-                setColor(4);
-            }
+            
             if (x == 0) {
                 cout << "X" << "  ";
             }
@@ -338,10 +394,7 @@ public:
             default:
                 break;
             }
-            if (World[pY - 2][pX + x] % 10 >= 1) {
-                // 14
-                setColor(4);
-            }
+            
             cout << World[pY + 1][pX + x] % 10 << "  ";
         }
         cout << endl;
@@ -363,10 +416,7 @@ public:
             default:
                 break;
             }
-            if (World[pY - 2][pX + x] % 10 >= 1) {
-                // 14
-                setColor(4);
-            }
+            
             cout << World[pY + 2][pX + x] % 10 << "  ";
         }
         cout << endl;
@@ -600,12 +650,28 @@ public:
         }
     }
 };
+
+class world {
+    public:
+    void printTime() {
+        graphics graphicsHandler;
+        if (worldTime>=5 && worldTime<22) {
+            graphicsHandler.setColor(14);
+            cout<<"DAY"<<endl;;
+        }
+        if (worldTime<5 && worldTime>0 || worldTime>=20 && worldTime<23) {
+            graphicsHandler.setColor(9);
+            cout<<"NIGHT"<<endl;;
+        }
+    }
+};
+
 class player {
     userInterface ui;
     graphics graphcs;
 
 private:
-    bool debugMode = true;
+    bool debugMode = false;
     int playerDamage = 5;
     int hpAm = 10;
     int hungerAm = 10;
@@ -662,6 +728,7 @@ class controls {
     player getPlayer;
     graphics getGraphics;
     engine getEngine;
+    world getWorld;
 public:
     int input() {
         int velocity = 0;
@@ -676,6 +743,7 @@ public:
                         getGraphics.setColor(7);
 
                         getGraphics.clearScreen();
+                        getGraphics.drawSun(worldTime);
                         getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
                         getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
                         getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
@@ -687,7 +755,7 @@ public:
                         getPlayer.printHungr(10);
                         cout << "" << endl;
                         getGraphics.printInventory(inventory);
-                        cout << "" << endl;
+
                         cout << "" << endl;
                         getGraphics.drawMinimap(playerPosition[0], playerPosition[1]);
                         cout << endl;
@@ -708,6 +776,7 @@ public:
                 getGraphics.setColor(7);
 
                 getGraphics.clearScreen();
+                getGraphics.drawSun(worldTime);
                 getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
                 getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
                 getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
@@ -719,7 +788,7 @@ public:
                 getPlayer.printHungr(10);
                 cout << "" << endl;
                 getGraphics.printInventory(inventory);
-                cout << "" << endl;
+
                 cout << "" << endl;
                 getGraphics.drawMinimap(playerPosition[0], playerPosition[1]);
                 cout << endl;
@@ -741,6 +810,7 @@ public:
                             getGraphics.setColor(7);
 
                             getGraphics.clearScreen();
+                            getGraphics.drawSun(worldTime);
                             getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
                             getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
                             getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
@@ -752,7 +822,7 @@ public:
                             getPlayer.printHungr(10);
                             cout << "" << endl;
                             getGraphics.printInventory(inventory);
-                            cout << "" << endl;
+
                             cout << "" << endl;
                             getGraphics.drawMinimap(playerPosition[0], playerPosition[1]);
                             cout << endl;
@@ -785,6 +855,7 @@ public:
                 getGraphics.setColor(7);
 
                 getGraphics.clearScreen();
+                getGraphics.drawSun(worldTime);
                 getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
                 getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
                 getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
@@ -796,7 +867,8 @@ public:
                 getPlayer.printHungr(10);
                 cout << "" << endl;
                 getGraphics.printInventory(inventory);
-                cout << "" << endl;
+
+                cout<<endl;
                 getGraphics.drawMinimap(playerPosition[0], playerPosition[1]);
                 cout << endl;
                 if (getPlayer.getDegugState() == true) {
@@ -824,6 +896,7 @@ public:
                 getGraphics.setColor(7);
 
                 getGraphics.clearScreen();
+                getGraphics.drawSun(worldTime);
                 getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
                 getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
                 getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
@@ -836,7 +909,8 @@ public:
                 getPlayer.printHungr(10);
                 cout << "" << endl;
                 getGraphics.printInventory(inventory);
-                cout << "" << endl;
+
+                cout<<endl;
                 getGraphics.drawMinimap(playerPosition[0], playerPosition[1]);
                 cout << endl;
                 if (getPlayer.getDegugState() == true) {
@@ -847,36 +921,6 @@ public:
         }
 
         return velocity;
-    }
-};
-class world {
-    controls getPlayerControls;
-    player getPlayer;
-private:
-    int treeHp;
-public:
-    void setTreeHp(int structure) {
-        if (structure == 1) {
-            treeHp = 10;
-        }
-    }
-    void hurtTree(int structure) {
-        if (GetAsyncKeyState(VK_SPACE) && structure == 1) {
-            treeHp -= getPlayer.getDamage();
-        }
-    }
-    int getTreeHp() {
-        return treeHp;
-    }
-    void killTree(int structure, int curHp) {
-        curHp = getTreeHp();
-        if (structure == 1 && curHp == 0) {
-            int temp = World[playerPosition[0]][playerPosition[1]] / 100 * 100;
-            int stru = World[playerPosition[0]][playerPosition[1]] % 100 / 10 * 10;
-            int safe = World[playerPosition[0]][playerPosition[1]] % 10;
-            stru = 0;
-            World[playerPosition[0]][playerPosition[1]] = temp + stru + safe;
-        }
     }
 };
 
@@ -911,6 +955,7 @@ int main() {
 
         graphicsHandler.clearScreen();
         if (under == false) {
+            graphicsHandler.drawSun(worldTime);
             graphicsHandler.drawTerrain(playerPosition[0], playerPosition[1]);
             graphicsHandler.drawTree(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
             graphicsHandler.drawStone(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
@@ -924,7 +969,8 @@ int main() {
         player.printHungr(10);
         cout << "" << endl;
         graphicsHandler.printInventory(inventory);
-        cout << "" << endl;
+
+        cout<<endl;
         graphicsHandler.drawMinimap(playerPosition[0], playerPosition[1]);
         cout << endl;
         if (player.getDegugState() == true) {
@@ -958,21 +1004,33 @@ int main() {
             if (GetAsyncKeyState(VK_UP)) {
                 playerPosition[0] -= 1;
                 engineHandler.tickHunger -= 1;
+                if (worldTime==24) {
+                    worldTime=0;
+                }
                 break;
             }
             if (GetAsyncKeyState(VK_DOWN)) {
                 playerPosition[0] += 1;
                 engineHandler.tickHunger -= 1;
+                if (worldTime==24) {
+                    worldTime=0;
+                }
                 break;
             }
             if (GetAsyncKeyState(VK_RIGHT)) {
                 playerPosition[1] += 1;
                 engineHandler.tickHunger -= 1;
+                if (worldTime==24) {
+                    worldTime=0;
+                }
                 break;
             }
             if (GetAsyncKeyState(VK_LEFT)) {
                 playerPosition[1] -= 1;
                 engineHandler.tickHunger -= 1;
+                if (worldTime==24) {
+                    worldTime=0;
+                }
                 break;
             }
             if (GetAsyncKeyState(VK_ESCAPE)) {
