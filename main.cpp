@@ -63,7 +63,7 @@ int playerPosition[2]{ 2499, 2499 };
 vector<int> inventory;
 vector<int> ItemAmount;
 bool under = false;
-int worldTime=20;
+int worldTime=15;
 
 class engine {
 public:
@@ -210,47 +210,33 @@ public:
     void printScreen() {
         for (int y = 0; y < 25; y++) {
             for (int x = 0; x < 81; x++) {
-                if (y >= 20) {
+                if (screen[y][x]=="|" || screen[y][x]=="*" || screen[y][x]=="#") {
                     grass();
                 }
                 
-                if (y >= 8 && y < 14) {
-                    if ((World[playerPosition[0]][playerPosition[1]] / 100) == 1 && (World[playerPosition[0]][playerPosition[1]] / 100) != 6) {
+                if (screen[y][x]=="Q") {
+                    if ((World[playerPosition[0]][playerPosition[1]] / 100) == 1) {
                         setColor(10);
                     }
-                }
-                if (y >= 14 && y < 20) { //8
-                    if ((World[playerPosition[0]][playerPosition[1]] / 100) == 1 || (World[playerPosition[0]][playerPosition[1]] / 100) == 2 && (World[playerPosition[0]][playerPosition[1]] / 100) != 6) {
-                        setColor(8);
+                    if ((World[playerPosition[0]][playerPosition[1]] / 100) == 2) {
+                        setColor(7);
                     }
+                }
+                if (screen[y][x]=="O") {
+                    setColor(8);
                 }
                 ///////////////////////////////////////
-                if (worldTime<20 && worldTime>=5) {
-                    if (worldTime>3 && worldTime<12) {
-                        if (x>=7 && x<14 && y>=16 && y<=18) {
-                            setColor(7);
-                            setColor(14);
-                        }
-                    }
-                    if (worldTime>=12 && worldTime<17) {
-                        if (x>=32 && x<39 && y>=4 && y<=6) {
-                            setColor(7);
-                            setColor(14);
-                        }
-                    }
-                    if (worldTime>=17 && worldTime<=23 || worldTime>=0 && worldTime<5) {
-                        if (x>=58 && x<65 && y>=16 && y<=18) {
-                            setColor(7);
-                            setColor(14);
-                        }
-                    }
+                if (screen[y][x]=="o") {
+                    setColor(14);
+                }
+                if (screen[y][x]=="I") {
+                    setColor(8);
+                }
+                if (screen[y][x]=="_") {
+                    setColor(12);
                 }
                 ////////////////////////////////////////////////////////
-                if (y >= 14 && y < 20) {
-                    if ((World[playerPosition[0]][playerPosition[1]] % 10) == 2) {
-                        setColor(8);
-                    }
-                }
+                
                 cout << screen[y][x];
             }
             cout << "" << endl;
@@ -478,7 +464,7 @@ public:
         if (biome == 1 && World[playerPosition[0]][playerPosition[1]] / 100 != 6) {
             // draw log
             for (int y = 14; y < 20; y++) {
-                screen[y][35] = "#";
+                screen[y][35] = "I";
             }
             // draw leaves
             for (int y = 8; y < 14; y++) {
@@ -743,7 +729,10 @@ public:
                         getGraphics.setColor(7);
 
                         getGraphics.clearScreen();
-                        getGraphics.drawSun(worldTime);
+                        if (World[playerPosition[0]][playerPosition[1]]%10<1) {
+                            getGraphics.drawSun(worldTime);
+                        }
+                        
                         getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
                         getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
                         getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
@@ -776,7 +765,9 @@ public:
                 getGraphics.setColor(7);
 
                 getGraphics.clearScreen();
-                getGraphics.drawSun(worldTime);
+                if (World[playerPosition[0]][playerPosition[1]]%10<1) {
+                    getGraphics.drawSun(worldTime);
+                }
                 getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
                 getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
                 getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
@@ -810,7 +801,9 @@ public:
                             getGraphics.setColor(7);
 
                             getGraphics.clearScreen();
-                            getGraphics.drawSun(worldTime);
+                            if (World[playerPosition[0]][playerPosition[1]]%10<1) {
+                                getGraphics.drawSun(worldTime);
+                            }   
                             getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
                             getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
                             getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
@@ -855,7 +848,9 @@ public:
                 getGraphics.setColor(7);
 
                 getGraphics.clearScreen();
-                getGraphics.drawSun(worldTime);
+                if (World[playerPosition[0]][playerPosition[1]]%10<1) {
+                    getGraphics.drawSun(worldTime);
+                }   
                 getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
                 getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
                 getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
@@ -896,7 +891,9 @@ public:
                 getGraphics.setColor(7);
 
                 getGraphics.clearScreen();
-                getGraphics.drawSun(worldTime);
+                if (World[playerPosition[0]][playerPosition[1]]%10<1) {
+                    getGraphics.drawSun(worldTime);
+                }
                 getGraphics.drawTerrain(playerPosition[0], playerPosition[1]);
                 getGraphics.drawTree(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
                 getGraphics.drawStone(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
@@ -955,7 +952,9 @@ int main() {
 
         graphicsHandler.clearScreen();
         if (under == false) {
-            graphicsHandler.drawSun(worldTime);
+            if (World[playerPosition[0]][playerPosition[1]]%10<1) {
+                graphicsHandler.drawSun(worldTime);
+            }
             graphicsHandler.drawTerrain(playerPosition[0], playerPosition[1]);
             graphicsHandler.drawTree(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
             graphicsHandler.drawStone(World[playerPosition[0]][playerPosition[1]] % 100 / 10);
