@@ -63,7 +63,7 @@ int playerPosition[2]{ 2499, 2499 };
 vector<int> inventory;
 vector<int> ItemAmount;
 bool under = false;
-int worldTime=15;
+int worldTime=12;
 
 class engine {
 public:
@@ -156,7 +156,7 @@ public:
     void drawSun(int time) {
         clearScreen();
         // morning
-        if (time>3 && time<12) {
+        if (time>3 && time<12 || time>=21 && time<23) {
             //8-13
             for (int i=8; i<13; i++) {
                 screen[16][i]="o";
@@ -168,7 +168,7 @@ public:
                 screen[18][i]="o";
             }
         }
-        if (time>=12 && time<17) {
+        if (time>=12 && time<17 || time>=23 || time>=0 && time <2) {
             for (int i=33; i<38; i++) {
                 screen[4][i]="o";
             }
@@ -179,7 +179,7 @@ public:
                 screen[6][i]="o";
             }
         }
-        if (time>=17 && time<=23 || time>=0 && time<5) {
+        if (time>=17 && time<=23 || time>=2 && time<5) {
             for (int i=59; i<64; i++) {
                 screen[16][i]="o";
             }
@@ -227,7 +227,12 @@ public:
                 }
                 ///////////////////////////////////////
                 if (screen[y][x]=="o") {
-                    setColor(14);
+                    if (worldTime>=5 && worldTime<21) {
+                        setColor(14);
+                    }
+                    if (worldTime>=21 && worldTime<23 || worldTime>=0 && worldTime<5) {
+                        setColor(7);
+                    }
                 }
                 if (screen[y][x]=="I") {
                     setColor(8);
@@ -1003,6 +1008,7 @@ int main() {
             if (GetAsyncKeyState(VK_UP)) {
                 playerPosition[0] -= 1;
                 engineHandler.tickHunger -= 1;
+                worldTime++;
                 if (worldTime==24) {
                     worldTime=0;
                 }
@@ -1011,6 +1017,7 @@ int main() {
             if (GetAsyncKeyState(VK_DOWN)) {
                 playerPosition[0] += 1;
                 engineHandler.tickHunger -= 1;
+                worldTime++;
                 if (worldTime==24) {
                     worldTime=0;
                 }
@@ -1019,6 +1026,7 @@ int main() {
             if (GetAsyncKeyState(VK_RIGHT)) {
                 playerPosition[1] += 1;
                 engineHandler.tickHunger -= 1;
+                worldTime++;
                 if (worldTime==24) {
                     worldTime=0;
                 }
@@ -1027,6 +1035,7 @@ int main() {
             if (GetAsyncKeyState(VK_LEFT)) {
                 playerPosition[1] -= 1;
                 engineHandler.tickHunger -= 1;
+                worldTime++;
                 if (worldTime==24) {
                     worldTime=0;
                 }
