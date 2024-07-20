@@ -156,7 +156,7 @@ public:
     void drawSun(int time) {
         clearScreen();
         // morning
-        if (time>3 && time<12 || time>=21 && time<23) {
+        if (time>=6 && time<12 || time>=21 && time<23) {
             //8-13
             for (int i=8; i<13; i++) {
                 screen[16][i]="o";
@@ -168,7 +168,7 @@ public:
                 screen[18][i]="o";
             }
         }
-        if (time>=12 && time<17 || time>=23 || time>=0 && time <2) {
+        if (time>=12 && time<17 || time==23 || time>=0 && time<4) {
             for (int i=33; i<38; i++) {
                 screen[4][i]="o";
             }
@@ -179,7 +179,7 @@ public:
                 screen[6][i]="o";
             }
         }
-        if (time>=17 && time<=23 || time>=2 && time<5) {
+        if (time>=17 && time<21 || time>=4 && time<6) {
             for (int i=59; i<64; i++) {
                 screen[16][i]="o";
             }
@@ -227,10 +227,10 @@ public:
                 }
                 ///////////////////////////////////////
                 if (screen[y][x]=="o") {
-                    if (worldTime>=5 && worldTime<21) {
+                    if (worldTime>=6 && worldTime<21) {
                         setColor(14);
                     }
-                    if (worldTime>=21 && worldTime<23 || worldTime>=0 && worldTime<5) {
+                    if (worldTime>=21 && worldTime<=23 || worldTime>=0 && worldTime<6) {
                         setColor(7);
                     }
                 }
